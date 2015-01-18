@@ -1,0 +1,72 @@
+name: RequiresLogin
+id:   RequiresLogin
+key: requireslogin
+version: 0.1
+author_name: Alfasado Inc.
+author_link: http://alfasado.net/
+description: <__trans phrase="Create the Website which requires login.">
+l10n_class: RequiresLogin::L10N
+applications:
+    requireslogin:
+        handler: MT::App::RequiresLogin
+        methods:
+            debug: MT::App::RequiresLogin::debug
+            default: MT::App::RequiresLogin::default
+            do_register: MT::App::RequiresLogin::do_register
+            do_signup: MT::App::RequiresLogin::do_signup
+            edit_profile:
+                code: MT::App::RequiresLogin::edit_profile
+                requires_login: 1
+            logout: MT::App::RequiresLogin::logout
+            new_pw: MT::App::RequiresLogin::new_pw
+            save_profile:
+                code: MT::App::RequiresLogin::save_profile
+                requires_login: 1
+            signup: MT::App::RequiresLogin::signup
+            start_recover: MT::App::RequiresLogin::start_recover
+            recover: MT::App::RequiresLogin::recover
+            withdraw:
+                code: MT::App::RequiresLogin::withdraw
+                requires_login: 1
+        script: 'sub { MT->config->RequiresLoginScript }'
+permissions:
+    blog.view:
+        label: View Site
+        group: blog_comment
+        order: 100
+    blog.administer_blog:
+        inherit_from:
+            - blog.view
+callbacks:
+    MT::App::RequiresLogin::template_source.error:
+        handler: MT::App::RequiresLogin::_error_tmpl
+        priority: 1
+    MT::App::RequiresLogin::template_source.login:
+        handler: MT::App::RequiresLogin::_login_tmpl
+        priority: 1
+    MT::App::RequiresLogin::post_run: $requireslogin::RequiresLogin::App::_post_run
+init: RequiresLogin::App::initializer
+config_settings:
+    RequiresLoginScript:
+        default: mt-requireslogin.cgi
+        updatable: 1
+    RequiresLoginRegistration:
+        default: 1
+        updatable: 1
+custom_handlers:
+    requireslogin:
+        class: 9
+        code: RequiresLogin::App::_handler_requireslogin
+        default: 1
+        requires_login: 1
+settings:
+    requireslogin_signup_notify_to:
+        default: ''
+    requireslogin_default_role_id:
+        default: ''
+system_config_template: config.tmpl
+blog_config_template: blog_config.tmpl
+tags:
+    function:
+        RequiresLoginScript: 'sub { MT->config->RequiresLoginScript }'
+
